@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Naves</h1>
+<div class="cards">
+  {% for n in naves %}
+    <div class="card">
+      <img src="{{ n.image }}" alt="{{ n.name }}">
+      <h3>{{ n.name }}</h3>
+      <p>Modelo: {{ n.model }}</p>
+    </div>
+  {% endfor %}
+</div>
+{% endblock %}

@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Filmes</h1>
+<div class="cards">
+  {% for filme in filmes %}
+    <div class="card">
+      <img src="{{ filme.image }}" alt="{{ filme.title }}">
+      <h3>{{ filme.title }}</h3>
+      <p>Lançamento: {{ filme.release_date }}</p>
+    </div>
+  {% endfor %}
+</div>
+{% endblock %}
