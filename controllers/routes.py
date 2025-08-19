@@ -1,60 +1,37 @@
-from flask import render_template
+from flask import Blueprint, render_template, request
 import requests
 
+API_KEY = "chave aqui"
+BASE_URL = "https://api.themoviedb.org/3"
+
+bp = Blueprint("main", __name__)
+
+@bp.route("/")
+def index():
+    query = request.args.get("query")
+    
+    url_populares = f"{BASE_URL}/movie/popular?api_key={API_KEY}&language=pt-BR&page=1"
+    filmes_populares = requests.get(url_populares).json()["results"]
+    
+    url_em_alta = f"{BASE_URL}/movie/top_rated?api_key={API_KEY}&language=pt-BR&page=1"
+    filmes_em_alta = requests.get(url_em_alta).json()["results"]
+    
+    if query:
+        url = f"{BASE_URL}/search/movie?api_key={API_KEY}&language=pt-BR&query={query}"
+        filmes = requests.get(url).json()["results"]
+        return render_template("index.html", filmes=filmes, 
+                                            filmes_populares=filmes_populares, 
+                                            filmes_em_alta=filmes_em_alta)
+    else:
+        return render_template("index.html", filmes=filmes_populares, 
+                               filmes_populares=filmes_populares, 
+                               filmes_em_alta=filmes_em_alta)
+
+@bp.route("/detalhe/<int:filme_id>")
+def detalhe(filme_id):
+    url = f"{BASE_URL}/movie/{filme_id}?api_key={API_KEY}&language=pt-BR"
+    filme = requests.get(url).json()
+    return render_template("detalhe.html", filme=filme)
+
 def init_app(app):
-    # Rota Home
-    @app.route('/')
-    def home():
-        return render_template('index.html')
-
-    # Filmes
-    @app.route('/filmes')
-    def filmes():
-        url = "https://swapi.dev/api/films/"
-        response = requests.get(url, verify=False)  # ignora SSL
-        filmes = response.json()["results"]
-
-        for f in filmes:
-            id_filme = f["url"].split("/")[-2]
-            f["image"] = f"http://starwars-visualguide.com/assets/img/films/{id_filme}.jpg"
-
-        return render_template("filmes.html", filmes=filmes)
-
-    # Personagens
-    @app.route('/personagens')
-    def personagens():
-        url = "https://swapi.dev/api/people/"
-        response = requests.get(url, verify=False)
-        personagens = response.json()["results"]
-
-        for p in personagens:
-            id_personagem = p["url"].split("/")[-2]
-            p["image"] = f"http://starwars-visualguide.com/assets/img/characters/{id_personagem}.jpg"
-
-        return render_template("personagens.html", personagens=personagens)
-
-    # Naves
-    @app.route('/naves')
-    def naves():
-        url = "https://swapi.dev/api/starships/"
-        response = requests.get(url, verify=False)
-        naves = response.json()["results"]
-
-        for n in naves:
-            id_nave = n["url"].split("/")[-2]
-            n["image"] = f"http://starwars-visualguide.com/assets/img/starships/{id_nave}.jpg"
-
-        return render_template("naves.html", naves=naves)
-
-    # Planetas
-    @app.route('/planetas')
-    def planetas():
-        url = "https://swapi.dev/api/planets/"
-        response = requests.get(url, verify=False)
-        planetas = response.json()["results"]
-
-        for p in planetas:
-            id_planeta = p["url"].split("/")[-2]
-            p["image"] = f"http://starwars-visualguide.com/assets/img/planets/{id_planeta}.jpg"
-
-        return render_template("planetas.html", planetas=planetas)
+    app.register_blueprint(bp)

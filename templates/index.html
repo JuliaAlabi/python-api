@@ -1,0 +1,140 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+
+
+{% if not request.args.get('query') %}
+
+{% if filmes_em_alta and filmes_em_alta|length > 0 %}
+<div class="featured-carousel">
+    <div class="carousel-inner">
+        {% for filme in filmes_em_alta[:5] %}
+        <div class="carousel-item {% if loop.first %}active{% endif %}" 
+             style="background-image: url('https://image.tmdb.org/t/p/w1280{{ filme.backdrop_path }}');">
+            <div class="banner-overlay">
+                <h2 class="banner-title">{{ filme.title }}</h2>
+                <p>{{ filme.overview|truncate(200) }}</p>
+                <div class="banner-actions">
+                    <a href="{{ url_for('main.detalhe', filme_id=filme.id) }}" class="btn btn-info">
+                        <i class="fas fa-info-circle"></i> Mais Informações
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    
+    <div class="carousel-controls">
+        {% for i in range(filmes_em_alta[:5]|length) %}
+        <div class="carousel-indicator {% if loop.first %}active{% endif %}" data-slide-to="{{ i }}"></div>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+
+<h3 class="category-title">Em Alta</h3>
+<div class="movie-grid">
+    {% for filme in filmes_em_alta %}
+    <div class="movie-card">
+        <img src="https://image.tmdb.org/t/p/w500{{ filme.poster_path }}" alt="{{ filme.title }}">
+        <div class="movie-info">
+            <div class="movie-title">{{ filme.title }}</div>
+            <div class="movie-year">{{ filme.release_date[:4] if filme.release_date else "N/A" }}</div>
+            <div class="movie-rating">
+                <i class="fas fa-star"></i> {{ filme.vote_average|round(1) }}
+            </div>
+            <div class="movie-actions">
+                <a href="{{ url_for('main.detalhe', filme_id=filme.id) }}" class="btn btn-sm btn-danger">
+                    <i class="fas fa-play"></i> Assistir
+                </a>
+                <button class="btn btn-sm btn-outline-light">
+                    <i class="fas fa-plus"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<h3 class="category-title">Populares</h3>
+<div class="movie-grid">
+    {% for filme in filmes_populares %}
+    <div class="movie-card">
+        <img src="https://image.tmdb.org/t/p/w500{{ filme.poster_path }}" alt="{{ filme.title }}">
+        <div class="movie-info">
+            <div class="movie-title">{{ filme.title }}</div>
+            <div class="movie-year">{{ filme.release_date[:4] if filme.release_date else "N/A" }}</div>
+            <div class="movie-rating">
+                <i class="fas fa-star"></i> {{ filme.vote_average|round(1) }}
+            </div>
+            <div class="movie-actions">
+                <a href="{{ url_for('main.detalhe', filme_id=filme.id) }}" class="btn btn-sm btn-danger">
+                    <i class="fas fa-play"></i> Assistir
+                </a>
+                <button class="btn btn-sm btn-outline-light">
+                    <i class="fas fa-plus"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+
+<h3 class="category-title">Resultados para "{{ request.args.get('query') }}"</h3>
+<div class="movie-grid">
+    {% for filme in filmes %}
+    <div class="movie-card">
+        <img src="https://image.tmdb.org/t/p/w500{{ filme.poster_path }}" alt="{{ filme.title }}">
+        <div class="movie-info">
+            <div class="movie-title">{{ filme.title }}</div>
+            <div class="movie-year">{{ filme.release_date[:4] }}</div>
+            <div class="movie-rating">
+                <i class="fas fa-star"></i> {{ filme.vote_average|round(1) }}
+            </div>
+            <div class="movie-actions">
+                <a href="{{ url_for('main.detalhe', filme_id=filme.id) }}" class="btn btn-sm btn-danger">
+                    <i class="fas fa-play"></i> Assistir
+                </a>
+                <button class="btn btn-sm btn-outline-light">
+                    <i class="fas fa-plus"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const carouselItems = document.querySelectorAll('.carousel-item');
+        const indicators = document.querySelectorAll('.carousel-indicator');
+        let currentIndex = 0;
+        
+        function showSlide(index) {
+            carouselItems.forEach(item => item.classList.remove('active'));
+            indicators.forEach(indicator => indicator.classList.remove('active'));
+            
+            carouselItems[index].classList.add('active');
+            indicators[index].classList.add('active');
+            
+            currentIndex = index;
+        }
+        
+        function nextSlide() {
+            let nextIndex = (currentIndex + 1) % carouselItems.length;
+            showSlide(nextIndex);
+        }
+        
+        setInterval(nextSlide, 3000);
+        
+        indicators.forEach((indicator, index) => {
+            indicator.addEventListener('click', () => {
+                showSlide(index);
+            });
+        });
+    });
+</script>
+{% endblock %}

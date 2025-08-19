@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JuliaFlix - Catálogo de Filmes</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+</head>
+
+<body>
+    <!-- Header/Navbar -->
+    <nav class="navbar navbar-expand-lg sticky-top">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="{{ url_for('main.index') }}">JULIAFLIX</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" 
+                    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"><i class="fas fa-bars" style="color: #fff;"></i></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="{{ url_for('main.index') }}">Início</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Populares</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Em Breve</a>
+                    </li>
+                </ul>
+                <form method="GET" action="{{ url_for('main.index') }}" class="search-container">
+                    <input type="text" class="search-input" name="query" placeholder="Pesquisar filmes..." value="{{ request.args.get('query', '') }}">
+                    <button type="submit" class="search-btn"><i class="fas fa-search"></i></button>
+                </form>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        {% block content %}{% endblock %}
+    </div>
+
+    <footer>
+        <div class="container">
+            <div class="social-icons">
+                <a href="#"><i class="fab fa-facebook"></i></a>
+                <a href="#"><i class="fab fa-instagram"></i></a>
+                <a href="#"><i class="fab fa-twitter"></i></a>
+                <a href="#"><i class="fab fa-youtube"></i></a>
+            </div>
+            <div class="footer-links">
+                <div>
+                    <a href="#">Idioma e Legendas</a>
+                    <a href="#">Imprensa</a>
+                    <a href="#">Privacidade</a>
+                    <a href="#">Entre em contato</a>
+                </div>
+                <div>
+                    <a href="#">Audiodescrição</a>
+                    <a href="#">Relações com investidores</a>
+                    <a href="#">Avisos legais</a>
+                </div>
+                <div>
+                    <a href="#">Centro de ajuda</a>
+                    <a href="#">Carreiras</a>
+                    <a href="#">Preferências de cookies</a>
+                </div>
+                <div>
+                    <a href="#">Cartão pré-pago</a>
+                    <a href="#">Termos de uso</a>
+                    <a href="#">Informações corporativas</a>
+                </div>
+            </div>
+            <div class="copyright">
+                © 2023 CinemaStream. Todos os direitos reservados.
+            </div>
+        </div>
+    </footer>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

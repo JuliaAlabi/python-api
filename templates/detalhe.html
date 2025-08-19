@@ -1,0 +1,119 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+
+<div class="detail-hero" style="background-image: url('https://image.tmdb.org/t/p/w1280{{ filme.backdrop_path }}');">
+    <div class="detail-overlay"></div>
+</div>
+
+<div class="container detail-container">
+    <div class="row">
+        <div class="col-md-4">
+            <div class="detail-poster">
+                {% if filme.poster_path %}
+                <img src="https://image.tmdb.org/t/p/w500{{ filme.poster_path }}" class="img-fluid" alt="{{ filme.title }}">
+                {% else %}
+                <img src="https://via.placeholder.com/500x750?text=Sem+Poster" class="img-fluid" alt="Sem poster">
+                {% endif %}
+            </div>
+        </div>
+        
+        <div class="col-md-8 detail-content">
+            <h1 class="detail-title">{{ filme.title }}</h1>
+            
+            <div class="metadata">
+                <div class="metadata-item">
+                    <span class="rating-badge">
+                        <i class="fas fa-star"></i> {{ filme.vote_average|round(1) }}
+                    </span>
+                </div>
+                
+                <div class="metadata-item">
+                    <i class="fas fa-calendar-alt"></i>
+                    <span>{{ filme.release_date[:4] if filme.release_date else "N/A" }}</span>
+                </div>
+                
+                {% if filme.runtime %}
+                <div class="metadata-item">
+                    <i class="fas fa-clock"></i>
+                    <span>{{ filme.runtime }} min</span>
+                </div>
+                {% endif %}
+                
+                {% if filme.status %}
+                <div class="metadata-item">
+                    <i class="fas fa-film"></i>
+                    <span>{{ filme.status }}</span>
+                </div>
+                {% endif %}
+            </div>
+            
+            <div class="action-buttons">
+                <button class="btn-detail btn-play-detail">
+                    <i class="fas fa-play"></i> Assistir
+                </button>
+                <button class="btn-detail btn-add">
+                    <i class="fas fa-plus"></i> Minha Lista
+                </button>
+            </div>
+            
+            {% if filme.overview %}
+            <div class="overview-section">
+                <h3 class="overview-title">Sinopse</h3>
+                <p class="overview-text">{{ filme.overview }}</p>
+            </div>
+            {% endif %}
+            
+            {% if filme.genres %}
+            <div class="genres-section">
+                <h4 class="genres-title">Gêneros</h4>
+                <div>
+                    {% for genre in filme.genres %}
+                    <span class="genre-badge">{{ genre.name }}</span>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+            
+            <div class="details-grid">
+                {% if filme.original_language %}
+                <div class="detail-item">
+                    <div class="detail-label">Idioma Original</div>
+                    <div class="detail-value">{{ filme.original_language|upper }}</div>
+                </div>
+                {% endif %}
+                
+                {% if filme.budget and filme.budget > 0 %}
+                <div class="detail-item">
+                    <div class="detail-label">Orçamento</div>
+                    <div class="detail-value">U$ {{ "{:,.2f}".format(filme.budget) }}</div>
+                </div>
+                {% endif %}
+                
+                {% if filme.revenue and filme.revenue > 0 %}
+                <div class="detail-item">
+                    <div class="detail-label">Receita</div>
+                    <div class="detail-value">U$ {{ "{:,.2f}".format(filme.revenue) }}</div>
+                </div>
+                {% endif %}
+                
+                {% if filme.production_companies and filme.production_companies|length > 0 %}
+                <div class="detail-item">
+                    <div class="detail-label">Produção</div>
+                    <div class="detail-value">
+                        {% for company in filme.production_companies[:2] %}
+                        {{ company.name }}{% if not loop.last %}, {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+            
+            <a href="{{ url_for('main.index') }}" class="btn btn-outline-light back-button">
+                <i class="fas fa-arrow-left"></i> Voltar para o Catálogo
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}
